@@ -1,28 +1,26 @@
 // script.js
 
+// API meghívás és adat megjelenítése
 document.addEventListener('DOMContentLoaded', () => {
-    const userContainer = document.getElementById('user-container');
-    const fetchButton = document.getElementById('fetch-user');
+    fetch('https://randomuser.me/api/')
+        .then(response => response.json())
+        .then(data => {
+            const user = data.results[0];
 
-    fetchButton.addEventListener('click', fetchRandomUser);
+            // Felhasználói adatok
+            const fullName = `${user.name.first} ${user.name.last}`;
+            const email = user.email;
+            const phone = user.phone;
+            const city = user.location.city;
+            const country = user.location.country;
+            const picture = user.picture.large;
 
-    function fetchRandomUser() {
-        fetch('https://randomuser.me/api/')
-            .then(response => response.json())
-            .then(data => {
-                const user = data.results[0];
-                displayUser(user);
-            })
-            .catch(error => console.error('Error fetching user:', error));
-    }
-
-    function displayUser(user) {
-        userContainer.innerHTML = `
-            <h2>${user.name.first} ${user.name.last}</h2>
-            <img src="${user.picture.large}" alt="User Picture">
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>Phone:</strong> ${user.phone}</p>
-            <p><strong>Location:</strong> ${user.location.city}, ${user.location.country}</p>
-        `;
-    }
+            // HTML elemek
+            document.getElementById('random-name').textContent = fullName;
+            document.getElementById('random-email').textContent = email;
+            document.getElementById('random-phone').textContent = phone;
+            document.getElementById('random-location').textContent = `${city}, ${country}`;
+            document.getElementById('random-photo').src = picture;
+        })
+        .catch(error => console.error('Error:', error));
 });
